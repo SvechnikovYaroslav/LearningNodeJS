@@ -79,9 +79,31 @@ const writeFileAsync = async (path, data) => {
   );
 };
 
-const appendFileAsync = async (path, data) => {
+// const appendFileAsync = async (path, data) => {
+//   return new Promise((resolve, reject) =>
+//     fs.appendFile(path, data, (err) => {
+//       if (err) {
+//         return reject(err.message);
+//       }
+//       resolve();
+//     })
+//   );
+// };
+
+const readFileAsync = async (path) => {
   return new Promise((resolve, reject) =>
-    fs.appendFile(path, data, (err) => {
+    fs.readFile(path, "utf-8", (err, data) => {
+      if (err) {
+        return reject(err.message);
+      }
+      resolve(data);
+    })
+  );
+};
+
+const removeFileAsync = async (path) => {
+  return new Promise((resolve, reject) =>
+    fs.rm(path, (err) => {
       if (err) {
         return reject(err.message);
       }
@@ -90,8 +112,27 @@ const appendFileAsync = async (path, data) => {
   );
 };
 
-writeFileAsync(path.resolve(__dirname, "test.txt"), "data ")
-  .then(() => appendFileAsync(path.resolve(__dirname, "test.txt"), "123 "))
-  .then(() => appendFileAsync(path.resolve(__dirname, "test.txt"), "456 "))
-  .then(() => appendFileAsync(path.resolve(__dirname, "test.txt"), "789 "))
-  .catch((err) => console.log(err));
+// writeFileAsync(path.resolve(__dirname, "test.txt"), "data ")
+//   .then(() => appendFileAsync(path.resolve(__dirname, "test.txt"), "123 "))
+//   .then(() => appendFileAsync(path.resolve(__dirname, "test.txt"), "456 "))
+//   .then(() => appendFileAsync(path.resolve(__dirname, "test.txt"), "789 "))
+//   .then(() => readFileAsync(path.resolve(__dirname, "test.txt")))
+//   .then((data) => {
+//     console.log(data);
+//   })
+//   .catch((err) => console.log(err));
+
+// removeFileAsync(path.resolve(__dirname, "test.txt"))
+// .then(() => console.log("File successfully removed"));
+
+// Передаем через переменную окружения строку, записать ее в файл
+// Посчитать кол-во слов, записать их в файл count.txt. Удалить первый файл
+
+const text = process.env.TEXT || "";
+writeFileAsync(path.resolve(__dirname, "fs-task-string.txt"), text)
+.then(() => readFileAsync(path.resolve(__dirname, "fs-task-string.txt")))
+.then((data) => data.split(" ").length)
+.then(count => writeFileAsync(path.resolve(__dirname, "count.txt"), `Количестсво слов ${count}`))
+.then(() => removeFileAsync(path.resolve(__dirname, "fs-task-string.txt")))
+
+
