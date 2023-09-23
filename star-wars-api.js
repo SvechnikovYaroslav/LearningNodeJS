@@ -1,0 +1,1 @@
+let names = process.argv[2];
